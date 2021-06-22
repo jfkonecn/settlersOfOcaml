@@ -46,11 +46,11 @@ let startWithSeedGame seed playerBlueprints =
         let rec buildTerrainTiles numTokens terrains =
             let createProductiveTile x =
                 match numTokens with
-                | head::tail -> (Productive (x, head), tail)
+                | head::tail -> (Productive (x, head, None), tail)
                 | [] -> raise (TokenException "Ran out of number tokens") in
             let createTerrainTile x =
                 match x with
-                | Desert -> (Barren x, numTokens)
+                | Desert -> (Barren (x, Some ()), numTokens)
                 | _ -> createProductiveTile x in
             match terrains with
             | terrainHead::terrainTail ->

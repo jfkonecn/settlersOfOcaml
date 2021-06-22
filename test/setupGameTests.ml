@@ -67,9 +67,33 @@ let shouldCreateGame _ =
     | Ok x -> testPlayers x.players |> (fun () -> testBoard x.gameBoard)
     | _ -> assert_failure ("Expected no Errors")
 
+
+let robberShouldBePlacedInTheDesert _ =
+    let players:playerBlueprint list = [(Name "red", Red);(Name "blue", Blue)]
+    and hasRobber (p:gameBoardPoint) =
+        match p.item with
+        | Terrain Productive (_, _, Some ()) -> true
+        | Terrain Barren (_, Some ()) -> true
+        | _ -> false
+    and tapAssertFunReturnsTrue f x =
+        assert_equal (f x) true;
+        x in
+    let f (g:game) =
+        g.gameBoard
+        |> Array.to_list
+        |> List.filter hasRobber
+        |> tapAssertFunReturnsTrue (fun x -> List.length x = 1) 
+        |> List.hd
+        |> tapAssertFunReturnsTrue (fun x -> x.item = Terrain (Barren (Desert, Some ())))
+        |> (fun _ -> ()) in
+    match startGame players with
+    | Ok x -> f x
+    | _ -> assert_failure ("Expected no Errors")
+
 let tests = "test suite for game setup" >::: [
   "Too Few Players Should Create an Error"  >:: tooFewPlayersShouldCreateError;
   "Too Many Characters Should Generate an Error"  >:: tooManyCharactersShouldGenerateAnError;
   "Duplicate Colors Should Generate an Error"  >:: duplicateColorsShouldGenerateAnError;
   "Should Create Game"  >:: shouldCreateGame;
+  "Robber Should Be Placed In The Desert"  >:: robberShouldBePlacedInTheDesert;
 ]

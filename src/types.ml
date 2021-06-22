@@ -65,12 +65,12 @@ type settlement = {
 
 type road = int
 type die = int
-type robber = int
+type robber = unit
 
 
 type terrainTile = 
-    | Productive of terrain * circularToken
-    | Barren of terrain
+    | Productive of terrain * circularToken * robber option
+    | Barren of terrain * robber option
 
 type developmentCard = 
     | KnightCard of knightCard
