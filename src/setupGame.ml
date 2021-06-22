@@ -50,7 +50,7 @@ let startWithSeedGame seed playerBlueprints =
                 | [] -> raise (TokenException "Ran out of number tokens") in
             let createTerrainTile x =
                 match x with
-                | Desert -> (Barren (x, Some ()), numTokens)
+                | Desert -> (Barren (x, Some (Robber ())), numTokens)
                 | _ -> createProductiveTile x in
             match terrains with
             | terrainHead::terrainTail ->

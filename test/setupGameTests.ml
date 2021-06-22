@@ -72,8 +72,8 @@ let robberShouldBePlacedInTheDesert _ =
     let players:playerBlueprint list = [(Name "red", Red);(Name "blue", Blue)]
     and hasRobber (p:gameBoardPoint) =
         match p.item with
-        | Terrain Productive (_, _, Some ()) -> true
-        | Terrain Barren (_, Some ()) -> true
+        | Terrain Productive (_, _, Some (Robber ())) -> true
+        | Terrain Barren (_, Some (Robber ())) -> true
         | _ -> false
     and tapAssertFunReturnsTrue f x =
         assert_equal (f x) true;
@@ -84,7 +84,7 @@ let robberShouldBePlacedInTheDesert _ =
         |> List.filter hasRobber
         |> tapAssertFunReturnsTrue (fun x -> List.length x = 1) 
         |> List.hd
-        |> tapAssertFunReturnsTrue (fun x -> x.item = Terrain (Barren (Desert, Some ())))
+        |> tapAssertFunReturnsTrue (fun x -> x.item = Terrain (Barren (Desert, Some (Robber ()))))
         |> (fun _ -> ()) in
     match startGame players with
     | Ok x -> f x

@@ -65,7 +65,7 @@ type settlement = {
 
 type road = int
 type die = int
-type robber = unit
+type robber = Robber of unit
 
 
 type terrainTile = 
