@@ -1,8 +1,3 @@
 open OUnit2
 
-let _ = run_test_tt_main 
-  ("SettlersOfOcaml" >:::
-     [
-        SetupGameTests.tests;
-     ])
-
+let _ = run_test_tt_main ("SettlersOfOcaml" >::: [ SetupGameTests.tests ])
