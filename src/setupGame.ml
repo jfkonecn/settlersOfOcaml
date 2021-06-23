@@ -181,9 +181,12 @@ let startWithSeedGame seed playerBlueprints =
      Axial coordinates
   *)
   let createGame playerBlueprints =
-    { players = playerBlueprints |> List.map createPlayer; gameBoard = board }
+    {
+      players = playerBlueprints |> List.map createPlayer;
+      gameBoard = board;
+      availableResourceCards =
+        { brick = 19; grain = 19; lumber = 19; ore = 19; wool = 19 };
+    }
   in
 
   validateBlueprints playerBlueprints |> Result.map createGame
-
-let startGame playerBlueprints = startWithSeedGame 1000 playerBlueprints

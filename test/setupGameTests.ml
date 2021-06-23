@@ -2,7 +2,7 @@ open OUnit2
 open SettlersOfOcaml
 open SettlersOfOcaml.Types
 
-let startGame = SettlersOfOcaml.startGame
+let startGame = SettlersOfOcaml.startWithSeedGame 1000
 
 let tooFewPlayersShouldCreateError _ =
   let _ =
@@ -71,9 +71,17 @@ let shouldCreateGame _ =
     let boardPoints = board |> Array.map (fun x -> (x.x, x.y)) in
     assert_equal boardPoints boardPoints
   in
+  
+  let testResourceCards (x:availableResourceCards) = 
+    assert_equal 19 x.wool;
+    assert_equal 19 x.ore;
+    assert_equal 19 x.lumber;
+    assert_equal 19 x.grain;
+    assert_equal 19 x.brick; in
+    
 
   match startGame players with
-  | Ok x -> testPlayers x.players |> fun () -> testBoard x.gameBoard
+  | Ok x -> testPlayers x.players |> fun () -> testBoard x.gameBoard |> fun () -> testResourceCards x.availableResourceCards
   | _ -> assert_failure "Expected no Errors"
 
 let robberShouldBePlacedInTheDesert _ =

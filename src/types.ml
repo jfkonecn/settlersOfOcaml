@@ -63,7 +63,19 @@ type gameBoardItem =
 
 type gameBoardPoint = { x : float; y : float; item : gameBoardItem }
 
-type game = { gameBoard : gameBoardPoint array; players : player list }
+type availableResourceCards = {
+  brick : int;
+  grain : int;
+  lumber : int;
+  ore : int;
+  wool : int;
+}
+
+type game = {
+  gameBoard : gameBoardPoint array;
+  players : player list;
+  availableResourceCards : availableResourceCards;
+}
 
 type gameError =
   | NameExceededCharacterLimit of int * playerBlueprint
