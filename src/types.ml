@@ -75,6 +75,7 @@ type game = {
   gameBoard : gameBoardPoint array;
   players : player list;
   availableResourceCards : availableResourceCards;
+  round : int;
 }
 
 type gameError =

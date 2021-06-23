@@ -65,26 +65,36 @@ let shouldCreateGame _ =
       y.hand
   in
 
-  let testPlayers x = x |> List.map2 testPlayer players |> fun _ -> () in
+  let testPlayers x =
+    x.players |> List.map2 testPlayer players |> fun _ -> ()
+  in
 
-  let testBoard (board : gameBoardPoint array) =
+  let testBoard (game : game) =
+    let board = game.gameBoard in
     let boardPoints = board |> Array.map (fun x -> (x.x, x.y)) in
     assert_equal boardPoints boardPoints
   in
 
-  let testResourceCards (x : availableResourceCards) =
-    assert_equal 19 x.wool;
-    assert_equal 19 x.ore;
-    assert_equal 19 x.lumber;
-    assert_equal 19 x.grain;
-    assert_equal 19 x.brick
+  let testResourceCards (game : game) =
+    let resourceCards = game.availableResourceCards in
+    assert_equal 19 resourceCards.wool;
+    assert_equal 19 resourceCards.ore;
+    assert_equal 19 resourceCards.lumber;
+    assert_equal 19 resourceCards.grain;
+    assert_equal 19 resourceCards.brick
+  in
+
+  let testRound (game : game) = assert_equal 1 game.round in
+
+  let tap f x =
+    f x;
+    x
   in
 
   match startGame players with
   | Ok x ->
-      testPlayers x.players |> fun () ->
-      testBoard x.gameBoard |> fun () ->
-      testResourceCards x.availableResourceCards
+      x |> tap testPlayers |> tap testBoard |> tap testResourceCards
+      |> tap testRound |> ignore
   | _ -> assert_failure "Expected no Errors"
 
 let robberShouldBePlacedInTheDesert _ =

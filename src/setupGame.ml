@@ -186,6 +186,7 @@ let startWithSeedGame seed playerBlueprints =
       gameBoard = board;
       availableResourceCards =
         { brick = 19; grain = 19; lumber = 19; ore = 19; wool = 19 };
+      round = 1;
     }
   in
 
