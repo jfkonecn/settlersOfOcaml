@@ -17,13 +17,6 @@ let terrainHexes =
   @ List.init 3 (fun _ -> Mountains)
   @ [ Desert ]
 
-let resourceCards =
-  List.init 19 (fun _ -> Lumber)
-  @ List.init 19 (fun _ -> Wool)
-  @ List.init 19 (fun _ -> Grain)
-  @ List.init 19 (fun _ -> Brick)
-  @ List.init 19 (fun _ -> Ore)
-
 let numberTokens =
   [
     { letter = 'B'; value = 2; color = Black };
