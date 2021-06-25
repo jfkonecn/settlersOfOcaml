@@ -36,9 +36,9 @@ let startWithSeedGame seed playerBlueprints =
       hand = { totalSettlements = 5; totalCities = 4; totalRoads = 15 };
     }
   in
+  let shuffle x = Linq.sortByInt (fun _ -> Random.int 1000) x in
 
   let board =
-    let shuffle x = Linq.sortByInt (fun _ -> Random.int 1000) x in
 
     let shuffledNumberTokens =
       BoardPieces.numberTokens |> Linq.sortByChar (fun x -> x.letter)
@@ -187,6 +187,7 @@ let startWithSeedGame seed playerBlueprints =
       availableResourceCards =
         { brick = 19; grain = 19; lumber = 19; ore = 19; wool = 19 };
       round = 1;
+      developmentCards = BoardPieces.developmentCards |> shuffle
     }
   in
 

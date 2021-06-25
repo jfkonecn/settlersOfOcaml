@@ -84,6 +84,12 @@ let shouldCreateGame _ =
     assert_equal 19 resourceCards.brick
   in
 
+  let testDevelopmentCards (game:game) =
+    assert_equal 14 (game.developmentCards |> List.filter (fun x -> x = KnightCard) |> List.length);
+    assert_equal 6 (game.developmentCards |> List.filter (fun x -> x = ProgressCard) |> List.length);
+    assert_equal 5 (game.developmentCards |> List.filter (fun x -> x = VictoryPointCard) |> List.length);
+  in
+
   let testRound (game : game) = assert_equal 1 game.round in
 
   let tap f x =
@@ -94,7 +100,7 @@ let shouldCreateGame _ =
   match startGame players with
   | Ok x ->
       x |> tap testPlayers |> tap testBoard |> tap testResourceCards
-      |> tap testRound |> ignore
+      |> tap testDevelopmentCards |> tap testRound |> ignore
   | _ -> assert_failure "Expected no Errors"
 
 let robberShouldBePlacedInTheDesert _ =

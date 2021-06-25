@@ -20,12 +20,6 @@ type circularTokenColor = Black | Red
 
 type circularToken = { value : int; color : circularTokenColor; letter : char }
 
-type knightCard = int
-
-type progressCard = int
-
-type victoryPointCard = int
-
 type buildingCostCard = int
 
 type specialCard = LongestRoad | LargestArmy
@@ -33,8 +27,6 @@ type specialCard = LongestRoad | LargestArmy
 type city = { color : playerColor }
 
 type settlement = { color : playerColor }
-
-type road = int
 
 type die = int
 
@@ -45,9 +37,9 @@ type terrainTile =
   | Barren of terrain * robber option
 
 type developmentCard =
-  | KnightCard of knightCard
-  | ProgressCard of progressCard
-  | VictoryPointCard of victoryPointCard
+  | KnightCard
+  | ProgressCard
+  | VictoryPointCard
 
 type seaTile = Harbor of harborToken | Water
 
@@ -75,6 +67,7 @@ type game = {
   gameBoard : gameBoardPoint array;
   players : player list;
   availableResourceCards : availableResourceCards;
+  developmentCards: developmentCard list;
   round : int;
 }
 

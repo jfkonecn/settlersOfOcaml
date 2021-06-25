@@ -38,3 +38,8 @@ let numberTokens =
     { letter = 'I'; value = 11; color = Black };
     { letter = 'R'; value = 11; color = Black };
   ]
+
+  let developmentCards =
+    List.init 14 (fun _ -> KnightCard)
+    @ List.init 6 (fun _ -> ProgressCard)
+    @ List.init 5 (fun _ -> VictoryPointCard)
