@@ -120,15 +120,16 @@ let robberShouldBePlacedInTheDesert _ =
     | Terrain (Productive (_, _, Some (Robber ()))) -> true
     | Terrain (Barren (_, Some (Robber ()))) -> true
     | _ -> false
-  and tapAssertFunReturnsTrue f x =
-    assert_equal (f x) true;
+  and tapAssertFunReturnsTrue msg f x =
+    assert_bool msg (f x);
     x
   in
   let f (g : game) =
     g.gameBoard |> Array.to_list |> List.filter hasRobber
-    |> tapAssertFunReturnsTrue (fun x -> List.length x = 1)
+    |> tapAssertFunReturnsTrue "Should have exactly 1 robber" (fun x ->
+           List.length x = 1)
     |> List.hd
-    |> tapAssertFunReturnsTrue (fun x ->
+    |> tapAssertFunReturnsTrue "Robber should be on a desert" (fun x ->
            x.item = Terrain (Barren (Desert, Some (Robber ()))))
     |> fun _ -> ()
   in

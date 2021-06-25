@@ -179,6 +179,10 @@ let startWithSeedGame seed playerBlueprints =
      https://www.redblobgames.com/grids/hexagons/
      Axial coordinates
   *)
+  let startingPlayer : playerColor =
+    match Random.int 4 with 0 -> Red | 1 -> White | 2 -> Orange | _ -> Blue
+  in
+
   let createGame playerBlueprints =
     {
       players = playerBlueprints |> List.map createPlayer;
@@ -187,6 +191,8 @@ let startWithSeedGame seed playerBlueprints =
         { brick = 19; grain = 19; lumber = 19; ore = 19; wool = 19 };
       round = 1;
       developmentCards = BoardPieces.developmentCards |> shuffle;
+      startingColor = startingPlayer;
+      currentColor = startingPlayer;
     }
   in
 

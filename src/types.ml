@@ -66,6 +66,8 @@ type game = {
   availableResourceCards : availableResourceCards;
   developmentCards : developmentCard list;
   round : int;
+  startingColor : playerColor;
+  currentColor : playerColor;
 }
 
 type gameError =
