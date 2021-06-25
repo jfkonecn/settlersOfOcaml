@@ -36,10 +36,7 @@ type terrainTile =
   | Productive of terrain * circularToken * robber option
   | Barren of terrain * robber option
 
-type developmentCard =
-  | KnightCard
-  | ProgressCard
-  | VictoryPointCard
+type developmentCard = KnightCard | ProgressCard | VictoryPointCard
 
 type seaTile = Harbor of harborToken | Water
 
@@ -67,7 +64,7 @@ type game = {
   gameBoard : gameBoardPoint array;
   players : player list;
   availableResourceCards : availableResourceCards;
-  developmentCards: developmentCard list;
+  developmentCards : developmentCard list;
   round : int;
 }
 
