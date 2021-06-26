@@ -70,7 +70,16 @@ type game = {
   currentColor : playerColor;
 }
 
+type move =
+  | PlaceSettlement
+  | PlaceRoad
+  | EndTurn
+
 type gameError =
   | NameExceededCharacterLimit of int * playerBlueprint
   | DuplicatedColor of playerColor * playerBlueprint list
   | NotEnoughPlayers
+  | InvalidMove of move
+
+
+

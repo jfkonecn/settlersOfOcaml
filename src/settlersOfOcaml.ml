@@ -1,7 +1,6 @@
 module SettlersOfOcaml = struct
-  let rec sum = function [] -> 0 | x :: xs -> x + sum xs
-
   let startWithSeedGame = SetupGame.startWithSeedGame
-
+  let getAvailableMoves = PlayGame.getAvailableMoves
+  let makeMove = PlayGame.makeMove
   module Types = Types
 end
