@@ -2,6 +2,8 @@ open OUnit2
 open SettlersOfOcaml
 open SettlersOfOcaml.Types
 
+let groupBy = SettlersOfOcaml.Linq.groupBy
+
 let startGame = SettlersOfOcaml.startWithSeedGame 1000
 
 let tooFewPlayersShouldCreateError _ =
@@ -71,7 +73,7 @@ let shouldCreateGame _ =
 
   let testBoard (game : game) =
     let board = game.gameBoard in
-    let boardPoints = board |> Array.map (fun x -> (x.x, x.y)) in
+    let boardPoints = board |> List.map (fun x -> (x.x, x.y)) in
     assert_equal boardPoints boardPoints
   in
 
@@ -96,7 +98,16 @@ let shouldCreateGame _ =
     assert_equal 5
       (game.developmentCards
       |> List.filter (fun x -> x = VictoryPointCard)
-      |> List.length)
+      |> List.length);
+    game.gameBoard
+    |> List.filter_map (fun x ->
+           match x.item with
+           | Terrain (Productive (ID id, _, _, _))
+           | Terrain (Barren (ID id, _, _)) ->
+               Some id
+           | _ -> None)
+    |> fun x ->
+    assert_equal (List.length x) (x |> groupBy (fun y -> y) |> List.length)
   in
 
   let testRound (game : game) = assert_equal 1 game.round in
@@ -117,20 +128,22 @@ let robberShouldBePlacedInTheDesert _ =
     [ (Name "red", Red); (Name "blue", Blue) ]
   and hasRobber (p : gameBoardPoint) =
     match p.item with
-    | Terrain (Productive (_, _, Some (Robber ()))) -> true
-    | Terrain (Barren (_, Some (Robber ()))) -> true
+    | Terrain (Productive (_, _, _, Some (Robber ()))) -> true
+    | Terrain (Barren (_, _, Some (Robber ()))) -> true
     | _ -> false
   and tapAssertFunReturnsTrue msg f x =
     assert_bool msg (f x);
     x
   in
   let f (g : game) =
-    g.gameBoard |> Array.to_list |> List.filter hasRobber
+    g.gameBoard |> List.filter hasRobber
     |> tapAssertFunReturnsTrue "Should have exactly 1 robber" (fun x ->
            List.length x = 1)
     |> List.hd
     |> tapAssertFunReturnsTrue "Robber should be on a desert" (fun x ->
-           x.item = Terrain (Barren (Desert, Some (Robber ()))))
+           match x.item with
+           | Terrain (Barren (_, Desert, Some (Robber ()))) -> true
+           | _ -> false)
     |> fun _ -> ()
   in
   match startGame players with

@@ -1,3 +1,5 @@
+type id = ID of int
+
 type playerColor = Red | White | Orange | Blue
 
 type hand = { totalSettlements : int; totalCities : int; totalRoads : int }
@@ -20,21 +22,17 @@ type circularTokenColor = Black | Red
 
 type circularToken = { value : int; color : circularTokenColor; letter : char }
 
-type buildingCostCard = int
-
 type specialCard = LongestRoad | LargestArmy
 
 type city = { color : playerColor }
 
 type settlement = { color : playerColor }
 
-type die = int
-
 type robber = Robber of unit
 
 type terrainTile =
-  | Productive of terrain * circularToken * robber option
-  | Barren of terrain * robber option
+  | Productive of id * terrain * circularToken * robber option
+  | Barren of id * terrain * robber option
 
 type developmentCard = KnightCard | ProgressCard | VictoryPointCard
 
@@ -61,7 +59,7 @@ type availableResourceCards = {
 }
 
 type game = {
-  gameBoard : gameBoardPoint array;
+  gameBoard : gameBoardPoint list;
   players : player list;
   availableResourceCards : availableResourceCards;
   developmentCards : developmentCard list;

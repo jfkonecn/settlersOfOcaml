@@ -2,15 +2,16 @@ open Types
 
 let getAvailableMoves (_ : game) = [ PlaceSettlement ]
 
-let makeMove move game =
+let executeIfAllowed move f game =
   let isMatch x y = x = y in
-
-  let continueWithMove () = Ok game in
-
   let moveIfValid allowedMoves =
     match List.find_opt (isMatch move) allowedMoves with
-    | Some _ -> continueWithMove ()
+    | Some _ -> f ()
     | None -> Error (InvalidMove move)
   in
 
   getAvailableMoves game |> moveIfValid
+
+let placeSettlement (game : game) =
+  let continueWithSettlementPlacement () = Ok game in
+  executeIfAllowed PlaceSettlement continueWithSettlementPlacement game

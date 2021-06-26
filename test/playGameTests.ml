@@ -17,16 +17,16 @@ let roundOneShouldHavePlayerPlaceASettlementAndRoad _ =
     game
   in
 
-  let assertGameState round (game:game) = 
+  let assertGameState round game =
     assert_equal round game.round;
-    game in
+    game
+  in
 
   start2PlayerValidGame ()
   |> assertAvailableMoves [ PlaceSettlement ]
-  |> SettlersOfOcaml.makeMove PlaceSettlement
+  |> SettlersOfOcaml.placeSettlement
   |> Result.map_error (fun _ -> assert_failure "Failed to place settlement")
-  |> Result.get_ok
-  |> assertGameState 1
+  |> Result.get_ok |> assertGameState 1
   |> fun _ -> ()
 
 let tests =
