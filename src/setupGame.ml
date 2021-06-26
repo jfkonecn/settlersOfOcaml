@@ -46,12 +46,12 @@ let startWithSeedGame seed playerBlueprints =
     let rec buildTerrainTiles numTokens terrains =
       let createProductiveTile (id, terrian) =
         match numTokens with
-        | head :: tail -> (Productive (ID id, terrian, head, None), tail)
+        | head :: tail -> (Terrain (ID id, Productive (terrian, head, None)), tail)
         | [] -> raise (TokenException "Ran out of number tokens")
       in
       let createTerrainTile (id, terrian) =
         match terrian with
-        | Desert -> (Barren (ID id, terrian, Some (Robber ())), numTokens)
+        | Desert -> (Terrain (ID id, Barren (terrian, Some (Robber ()))), numTokens)
         | _ -> createProductiveTile (id, terrian)
       in
       match terrains with
@@ -66,7 +66,6 @@ let startWithSeedGame seed playerBlueprints =
       let terrainIds = List.init (terrains |> List.length) (fun x -> x) in
       Linq.zip terrainIds terrains
       |> buildTerrainTiles shuffledNumberTokens
-      |> List.map (fun x -> Terrain x)
     in
 
     let rec buildSeaTiles harborTokens terrains =

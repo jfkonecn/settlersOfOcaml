@@ -102,9 +102,7 @@ let shouldCreateGame _ =
     game.gameBoard
     |> List.filter_map (fun x ->
            match x.item with
-           | Terrain (Productive (ID id, _, _, _))
-           | Terrain (Barren (ID id, _, _)) ->
-               Some id
+           | Terrain (ID id, _) -> Some id
            | _ -> None)
     |> fun x ->
     assert_equal (List.length x) (x |> groupBy (fun y -> y) |> List.length)
@@ -128,8 +126,8 @@ let robberShouldBePlacedInTheDesert _ =
     [ (Name "red", Red); (Name "blue", Blue) ]
   and hasRobber (p : gameBoardPoint) =
     match p.item with
-    | Terrain (Productive (_, _, _, Some (Robber ()))) -> true
-    | Terrain (Barren (_, _, Some (Robber ()))) -> true
+    | Terrain (_, Productive (_, _, Some (Robber ()))) -> true
+    | Terrain (_, Barren ( _, Some (Robber ()))) -> true
     | _ -> false
   and tapAssertFunReturnsTrue msg f x =
     assert_bool msg (f x);
@@ -142,7 +140,7 @@ let robberShouldBePlacedInTheDesert _ =
     |> List.hd
     |> tapAssertFunReturnsTrue "Robber should be on a desert" (fun x ->
            match x.item with
-           | Terrain (Barren (_, Desert, Some (Robber ()))) -> true
+           | Terrain (_, Barren (Desert, Some (Robber ()))) -> true
            | _ -> false)
     |> fun _ -> ()
   in

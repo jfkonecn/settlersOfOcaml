@@ -31,8 +31,8 @@ type settlement = { color : playerColor }
 type robber = Robber of unit
 
 type terrainTile =
-  | Productive of id * terrain * circularToken * robber option
-  | Barren of id * terrain * robber option
+  | Productive of terrain * circularToken * robber option
+  | Barren of terrain * robber option
 
 type developmentCard = KnightCard | ProgressCard | VictoryPointCard
 
@@ -43,7 +43,7 @@ type hexEdge = Road of playerColor | Empty
 type hexCorner = House of playerColor | Empty
 
 type gameBoardItem =
-  | Terrain of terrainTile
+  | Terrain of id * terrainTile
   | Sea of seaTile
   | Edge of hexEdge
   | Corner of hexCorner

@@ -12,6 +12,16 @@ let executeIfAllowed move f game =
 
   getAvailableMoves game |> moveIfValid
 
-let placeSettlement (game : game) =
+let placeSettlement _ (game : game) =
   let continueWithSettlementPlacement () = Ok game in
   executeIfAllowed PlaceSettlement continueWithSettlementPlacement game
+
+let listAvailableSettlementLocaltions (game : game) =
+  let toTerrain x =
+    match x with
+    | Terrain (id, t) -> Some (id, t)
+    | _ -> None 
+  in
+  game.gameBoard
+  |> List.map (fun x -> x.item)
+  |> List.filter_map toTerrain

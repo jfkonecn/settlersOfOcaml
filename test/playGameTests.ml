@@ -22,9 +22,17 @@ let roundOneShouldHavePlayerPlaceASettlementAndRoad _ =
     game
   in
 
+  let raiseToGameGroup f x = ((f x), x) in
+  let passGameThrough f (x, y) = ((f x), y) in
+  let passGameGroup f (x, y) = (x, (f x y)) in
+
   start2PlayerValidGame ()
   |> assertAvailableMoves [ PlaceSettlement ]
-  |> SettlersOfOcaml.placeSettlement
+  |> raiseToGameGroup SettlersOfOcaml.listAvailableSettlementLocaltions
+  |> passGameThrough (fun x -> List.nth x 2)
+  |> passGameThrough (fun (id, _) -> id)
+  |> passGameGroup SettlersOfOcaml.placeSettlement
+  |> fun (_, gameResult) -> gameResult
   |> Result.map_error (fun _ -> assert_failure "Failed to place settlement")
   |> Result.get_ok |> assertGameState 1
   |> fun _ -> ()
