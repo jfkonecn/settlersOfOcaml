@@ -4,7 +4,8 @@ module SettlersOfOcaml = struct
   let getAvailableMoves = PlayGame.getAvailableMoves
 
   let placeSettlement = PlayGame.placeSettlement
-  let listAvailableSettlementLocaltions = PlayGame.listAvailableSettlementLocaltions
+  let listAvailableSettlementLocations = PlayGame.listAvailableSettlementLocations
+  let getGameItemById = PlayGame.getGameItemById
   
   module Types = Types
   module Linq = Linq

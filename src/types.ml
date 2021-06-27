@@ -75,3 +75,5 @@ type gameError =
   | DuplicatedColor of playerColor * playerBlueprint list
   | NotEnoughPlayers
   | InvalidMove of move
+  | BoardItemNotFound of id
+  | ItemIsNotACorner of id
