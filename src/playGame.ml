@@ -17,11 +17,11 @@ let placeSettlement _ (game : game) =
   executeIfAllowed PlaceSettlement continueWithSettlementPlacement game
 
 let listAvailableSettlementLocaltions (game : game) =
-  let toTerrain x =
+  let toCorner x =
     match x with
-    | Terrain (id, t) -> Some (id, t)
+    | id, Corner c -> Some (id, c)
     | _ -> None 
   in
   game.gameBoard
   |> List.map (fun x -> x.item)
-  |> List.filter_map toTerrain
+  |> List.filter_map toCorner

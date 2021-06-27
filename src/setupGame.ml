@@ -44,15 +44,15 @@ let startWithSeedGame seed playerBlueprints =
     in
 
     let rec buildTerrainTiles numTokens terrains =
-      let createProductiveTile (id, terrian) =
+      let createProductiveTile terrian =
         match numTokens with
-        | head :: tail -> (Terrain (ID id, Productive (terrian, head, None)), tail)
+        | head :: tail -> (Terrain (Productive (terrian, head, None)), tail)
         | [] -> raise (TokenException "Ran out of number tokens")
       in
-      let createTerrainTile (id, terrian) =
+      let createTerrainTile terrian =
         match terrian with
-        | Desert -> (Terrain (ID id, Barren (terrian, Some (Robber ()))), numTokens)
-        | _ -> createProductiveTile (id, terrian)
+        | Desert -> (Terrain (Barren (terrian, Some (Robber ()))), numTokens)
+        | _ -> createProductiveTile terrian
       in
       match terrains with
       | terrainHead :: terrainTail ->
@@ -62,9 +62,7 @@ let startWithSeedGame seed playerBlueprints =
     in
 
     let terrainTiles =
-      BoardPieces.terrainHexes |> shuffle |> fun terrains ->
-      let terrainIds = List.init (terrains |> List.length) (fun x -> x) in
-      Linq.zip terrainIds terrains
+      BoardPieces.terrainHexes |> shuffle
       |> buildTerrainTiles shuffledNumberTokens
     in
 
@@ -107,6 +105,13 @@ let startWithSeedGame seed playerBlueprints =
     and hexCenterToEdge = 1.0 in
     let hexEdgeLength = 2.0 /. 3.0 *. Float.sqrt 3.0 *. hexCenterToEdge in
 
+    let assignIds startingId items =
+      let itemIds =
+        List.init (items |> List.length) (fun x -> x + startingId)
+      in
+      Linq.zip itemIds items
+    in
+
     let hexPoints =
       let f x =
         x
@@ -131,8 +136,11 @@ let startWithSeedGame seed playerBlueprints =
       and level2Terrain = f [ (hexCenterToEdge *. 2.0, 0.0) ] in
       seaPoints @ level3Terrain @ level2Terrain @ [ (0.0, 0.0) ]
       |> Linq.zip (seaTiles @ terrainTiles)
-      |> List.map (fun (tile, (x, y)) -> { x; y; item = tile })
-    and cornerPoints =
+      |> assignIds 1
+      |> List.map (fun (id, (tile, (x, y))) -> { x; y; item = (ID id, tile) })
+    in
+
+    let cornerPoints =
       [
         (hexCenterToEdge *. 5.0, hexEdgeLength *. 0.5);
         (hexCenterToEdge *. 3.0, hexEdgeLength *. 3.5);
@@ -146,8 +154,11 @@ let startWithSeedGame seed playerBlueprints =
       ]
       |> List.map createAllCartesianPoints
       |> List.concat
-      |> List.map (fun (x, y) -> { x; y; item = Corner Empty })
-    and edgePoints =
+      |> assignIds (List.length hexPoints + 1)
+      |> List.map (fun (id, (x, y)) -> { x; y; item = (ID id, Corner Empty) })
+    in
+
+    let edgePoints =
       [
         (hexCenterToEdge *. 5.0, hexEdgeLength *. 0.0);
         (hexCenterToEdge *. 4.5, hexEdgeLength *. (Float.sqrt 3.0 /. 2.0));
@@ -168,7 +179,8 @@ let startWithSeedGame seed playerBlueprints =
       ]
       |> List.map createAllCartesianPoints
       |> List.concat
-      |> List.map (fun (x, y) -> { x; y; item = Edge Empty })
+      |> assignIds (List.length hexPoints + List.length cornerPoints + 1)
+      |> List.map (fun (id, (x, y)) -> { x; y; item = (ID id, Edge Empty) })
     in
 
     hexPoints @ cornerPoints @ edgePoints

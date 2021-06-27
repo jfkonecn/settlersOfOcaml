@@ -43,12 +43,12 @@ type hexEdge = Road of playerColor | Empty
 type hexCorner = House of playerColor | Empty
 
 type gameBoardItem =
-  | Terrain of id * terrainTile
+  | Terrain of terrainTile
   | Sea of seaTile
   | Edge of hexEdge
   | Corner of hexCorner
 
-type gameBoardPoint = { x : float; y : float; item : gameBoardItem }
+type gameBoardPoint = { x : float; y : float; item : id * gameBoardItem }
 
 type availableResourceCards = {
   brick : int;
@@ -68,16 +68,10 @@ type game = {
   currentColor : playerColor;
 }
 
-type move =
-  | PlaceSettlement
-  | PlaceRoad
-  | EndTurn
+type move = PlaceSettlement | PlaceRoad | EndTurn
 
 type gameError =
   | NameExceededCharacterLimit of int * playerBlueprint
   | DuplicatedColor of playerColor * playerBlueprint list
   | NotEnoughPlayers
   | InvalidMove of move
-
-
-

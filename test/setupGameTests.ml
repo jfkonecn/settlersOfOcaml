@@ -90,22 +90,20 @@ let shouldCreateGame _ =
     assert_equal 14
       (game.developmentCards
       |> List.filter (fun x -> x = KnightCard)
-      |> List.length);
+      |> List.length) ~msg:"Must have 14 knight cards";
     assert_equal 6
       (game.developmentCards
       |> List.filter (fun x -> x = ProgressCard)
-      |> List.length);
+      |> List.length) ~msg:"Must have 6 progress cards";
     assert_equal 5
       (game.developmentCards
       |> List.filter (fun x -> x = VictoryPointCard)
-      |> List.length);
+      |> List.length) ~msg:"Must have 5 victory point cards";
     game.gameBoard
-    |> List.filter_map (fun x ->
-           match x.item with
-           | Terrain (ID id, _) -> Some id
-           | _ -> None)
+    |> List.map (fun x -> x.item)
+    |> List.map (fun (ID id, _) -> id)
     |> fun x ->
-    assert_equal (List.length x) (x |> groupBy (fun y -> y) |> List.length)
+    assert_equal (List.length x) (x |> groupBy (fun y -> y) |> List.length) ~msg:"ID's must be unique"
   in
 
   let testRound (game : game) = assert_equal 1 game.round in
@@ -126,8 +124,8 @@ let robberShouldBePlacedInTheDesert _ =
     [ (Name "red", Red); (Name "blue", Blue) ]
   and hasRobber (p : gameBoardPoint) =
     match p.item with
-    | Terrain (_, Productive (_, _, Some (Robber ()))) -> true
-    | Terrain (_, Barren ( _, Some (Robber ()))) -> true
+    | _, Terrain (Productive (_, _, Some (Robber ()))) -> true
+    | _, Terrain (Barren (_, Some (Robber ()))) -> true
     | _ -> false
   and tapAssertFunReturnsTrue msg f x =
     assert_bool msg (f x);
@@ -140,7 +138,7 @@ let robberShouldBePlacedInTheDesert _ =
     |> List.hd
     |> tapAssertFunReturnsTrue "Robber should be on a desert" (fun x ->
            match x.item with
-           | Terrain (_, Barren (Desert, Some (Robber ()))) -> true
+           | _, Terrain (Barren (Desert, Some (Robber ()))) -> true
            | _ -> false)
     |> fun _ -> ()
   in
