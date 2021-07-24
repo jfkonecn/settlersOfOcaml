@@ -40,7 +40,7 @@ type seaTile = Harbor of harborToken | Water
 
 type hexEdge = Road of playerColor | Empty
 
-type hexCorner = House of playerColor | Empty
+type hexCorner = Settlement of playerColor | Empty
 
 type gameBoardItem =
   | Terrain of terrainTile

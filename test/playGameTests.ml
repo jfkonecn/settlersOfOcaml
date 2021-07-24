@@ -42,7 +42,7 @@ let roundOneShouldHavePlayerPlaceASettlement _ =
 
     assert_equal 1 game.round ~msg:"Should be round 1";
     assert_equal corner oldItem ~msg:"Items should match";
-    assert_equal (House curPlayerColor) newItem
+    assert_equal (Settlement curPlayerColor) newItem
       ~msg:"Corner should have settlement";
     ()
   in

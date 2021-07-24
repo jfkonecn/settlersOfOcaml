@@ -2,11 +2,11 @@ open Types
 
 let getAvailableMoves (game : game) =
   let handleRoundOne () =
-    let playerHasHouse =
+    let playerHasSettlement =
       game.gameBoard
       |> List.find_opt (fun x ->
              match x.item with
-             | _, Corner (House h) when h = game.currentColor -> true
+             | _, Corner (Settlement h) when h = game.currentColor -> true
              | _ -> false)
       |> Option.is_some
     in
@@ -18,7 +18,7 @@ let getAvailableMoves (game : game) =
              | _ -> false)
       |> Option.is_some
     in
-    match (playerHasHouse, playerHasRoad) with
+    match (playerHasSettlement, playerHasRoad) with
     | true, true -> [ EndTurn ]
     | false, _ -> [ PlaceSettlement ]
     | _, false -> [ PlaceRoad ]
@@ -43,7 +43,7 @@ let placeSettlement id (game : game) =
     let rec updateStateOfCorner items =
       match items with
       | { x; y; item = ID cornerId, Corner _ } :: t when cornerId = id ->
-          Ok ({ x; y; item = (ID cornerId, Corner (House currentColor)) } :: t)
+          Ok ({ x; y; item = (ID cornerId, Corner (Settlement currentColor)) } :: t)
       | { x = _; y = _; item = ID cornerId, _ } :: _ when cornerId = id ->
           Error (ItemIsNotACorner (ID id))
       | _ :: t -> updateStateOfCorner t
