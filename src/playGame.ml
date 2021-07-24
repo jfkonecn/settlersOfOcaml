@@ -1,6 +1,32 @@
 open Types
 
-let getAvailableMoves (_ : game) = [ PlaceSettlement ]
+let getAvailableMoves (game : game) =
+  let handleRoundOne () =
+    let playerHasHouse =
+      game.gameBoard
+      |> List.find_opt (fun x ->
+             match x.item with
+             | _, Corner (House h) when h = game.currentColor -> true
+             | _ -> false)
+      |> Option.is_some
+    in
+    let playerHasRoad =
+      game.gameBoard
+      |> List.find_opt (fun x ->
+             match x.item with
+             | _, Edge (Road r) when r = game.currentColor -> true
+             | _ -> false)
+      |> Option.is_some
+    in
+    match (playerHasHouse, playerHasRoad) with
+    | true, true -> [ EndTurn ]
+    | false, _ -> [ PlaceSettlement ]
+    | _, false -> [ PlaceRoad ]
+  in
+
+  match game with
+  | { round = 1; _ } -> handleRoundOne ()
+  | _ -> [ PlaceSettlement ]
 
 let executeIfAllowed move f game =
   let moveIfValid allowedMoves =
@@ -26,6 +52,7 @@ let placeSettlement id (game : game) =
 
     updateStateOfCorner game.gameBoard
     |> Result.map (fun board -> Ok { game with gameBoard = board })
+    |> Result.join
   in
   executeIfAllowed PlaceSettlement continueWithSettlementPlacement game
 

@@ -22,14 +22,14 @@ let getGameItemById id game =
     (fun () -> SettlersOfOcaml.getGameItemById id game)
     "Failed to get game item"
 
-let start2PlayerValidGame () =
+let standard2PlayerGame =
   let players : playerBlueprint list =
     [ (Name "red", Red); (Name "blue", Blue) ]
   in
   startGame players |> Result.get_ok
 
 let roundOneShouldHavePlayerPlaceASettlement _ =
-  let game = start2PlayerValidGame () in
+  let game = standard2PlayerGame in
   let curPlayerColor = game.currentColor in
   let assertCanPlaceSettlement (ID id, corner) =
     let itemToCorner x =
@@ -37,9 +37,7 @@ let roundOneShouldHavePlayerPlaceASettlement _ =
     in
 
     let oldItem = getGameItemById id game |> itemToCorner in
-    let game =
-      forceOk (fun () -> placeSettlement id game) "Should place settlement"
-    in
+    let game = placeSettlement id game in
     let newItem = getGameItemById id game |> itemToCorner in
 
     assert_equal 1 game.round ~msg:"Should be round 1";
@@ -55,9 +53,32 @@ let roundOneShouldHavePlayerPlaceASettlement _ =
   in
   ()
 
+let roundOneShouldForcePlayerToPlaceARoadAfterASettlement _ =
+  let stateBind f (x, s) =
+    let y = f (x, s) in
+    (y, s)
+  in
+
+  let game =
+    ((), standard2PlayerGame)
+    |> stateBind (fun (_, s) ->
+           SettlersOfOcaml.listAvailableSettlementLocations s)
+    |> (fun x ->
+         match x with
+         | (ID id, _) :: _, game -> SettlersOfOcaml.placeSettlement id game
+         | _ -> assert_failure "Should be able to settle somewhere")
+    |> Result.get_ok
+  in
+
+  match game |> SettlersOfOcaml.getAvailableMoves with
+  | [ PlaceRoad ] -> ()
+  | _ -> assert_failure "Should only be allowed to place a road"
+
 let tests =
   "test suite for playing game"
   >::: [
          "Round One Should Start with a Player Placing A Settlement"
          >:: roundOneShouldHavePlayerPlaceASettlement;
+         "Round One Should Force Player To Place A Road After A Settlement"
+         >:: roundOneShouldForcePlayerToPlaceARoadAfterASettlement;
        ]
