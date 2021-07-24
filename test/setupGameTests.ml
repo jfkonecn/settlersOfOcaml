@@ -124,8 +124,8 @@ let robberShouldBePlacedInTheDesert _ =
     [ (Name "red", Red); (Name "blue", Blue) ]
   and hasRobber (p : gameBoardPoint) =
     match p.item with
-    | _, Terrain (Productive (_, _, Some (Robber ()))) -> true
-    | _, Terrain (Barren (_, Some (Robber ()))) -> true
+    | _, Terrain (Productive (_, _, Some Robber )) -> true
+    | _, Terrain (Barren (_, Some Robber )) -> true
     | _ -> false
   and tapAssertFunReturnsTrue msg f x =
     assert_bool msg (f x);
@@ -138,7 +138,7 @@ let robberShouldBePlacedInTheDesert _ =
     |> List.hd
     |> tapAssertFunReturnsTrue "Robber should be on a desert" (fun x ->
            match x.item with
-           | _, Terrain (Barren (Desert, Some (Robber ()))) -> true
+           | _, Terrain (Barren (Desert, Some Robber)) -> true
            | _ -> false)
     |> fun _ -> ()
   in

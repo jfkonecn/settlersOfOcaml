@@ -51,7 +51,7 @@ let startWithSeedGame seed playerBlueprints =
       in
       let createTerrainTile terrian =
         match terrian with
-        | Desert -> (Terrain (Barren (terrian, Some (Robber ()))), numTokens)
+        | Desert -> (Terrain (Barren (terrian, Some Robber)), numTokens)
         | _ -> createProductiveTile terrian
       in
       match terrains with

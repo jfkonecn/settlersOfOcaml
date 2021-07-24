@@ -28,7 +28,7 @@ type city = { color : playerColor }
 
 type settlement = { color : playerColor }
 
-type robber = Robber of unit
+type robber = Robber
 
 type terrainTile =
   | Productive of terrain * circularToken * robber option
