@@ -48,26 +48,28 @@ let roundOneShouldHavePlayerPlaceASettlement _ =
   in
 
   let _ =
+    match game |> SettlersOfOcaml.getAvailableMoves with
+    | [ PlaceSettlement ] -> ()
+    | _ -> assert_failure "Should only be allowed to place a settlement"
+  in
+
+  let _ =
     SettlersOfOcaml.listAvailableSettlementLocations game
     |> List.map assertCanPlaceSettlement
   in
   ()
 
 let roundOneShouldForcePlayerToPlaceARoadAfterASettlement _ =
-  let stateBind f (x, s) =
-    let y = f (x, s) in
-    (y, s)
-  in
-
-  let game =
-    ((), standard2PlayerGame)
-    |> stateBind (fun (_, s) ->
-           SettlersOfOcaml.listAvailableSettlementLocations s)
-    |> (fun x ->
-         match x with
-         | (ID id, _) :: _, game -> SettlersOfOcaml.placeSettlement id game
-         | _ -> assert_failure "Should be able to settle somewhere")
-    |> Result.get_ok
+  let _, game =
+    Stateful.return ()
+    |> Stateful.bindPeek SettlersOfOcaml.listAvailableSettlementLocations
+    |> Stateful.mapWithState (fun x ->
+           (match x with
+           | (ID id, _) :: _, game -> SettlersOfOcaml.placeSettlement id game
+           | _ -> assert_failure "Should be able to settle somewhere")
+           |> Result.get_ok
+           |> fun x -> ((), x))
+    |> Stateful.run standard2PlayerGame
   in
 
   match game |> SettlersOfOcaml.getAvailableMoves with

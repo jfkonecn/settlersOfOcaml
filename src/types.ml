@@ -77,3 +77,33 @@ type gameError =
   | InvalidMove of move
   | BoardItemNotFound of id
   | ItemIsNotACorner of id
+
+module Stateful = struct
+  type ('a, 's) stateful = Stateful of ('s -> 'a * 's)
+
+  let run state (Stateful f) = f state
+
+  let bind f m =
+    Stateful
+      (fun s ->
+        let a', s' = run s m in
+        f a' |> run s')
+
+  let return a = Stateful (fun s -> (a, s))
+
+  let returnFun f = Stateful (fun s -> f s)
+
+  let map f m = bind (fun x -> return (f x)) m
+
+  let mapWithState f m =
+    Stateful
+      (fun s ->
+        let a', s' = run s m in
+        f (a', s'))
+
+  let join m = bind (fun x -> x) m
+
+  let peek (f : 's -> 'a) = Stateful (fun s -> (f s, s))
+
+  let bindPeek f = bind (fun _ -> peek f)
+end
