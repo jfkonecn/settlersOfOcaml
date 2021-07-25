@@ -28,6 +28,16 @@ let standard2PlayerGame =
   in
   startGame players |> Result.get_ok
 
+let placeSettlementSomewhere =
+  Stateful.return ()
+  |> Stateful.bindPeek SettlersOfOcaml.listAvailableSettlementLocations
+  |> Stateful.mapWithState (fun x ->
+         (match x with
+         | (ID id, _) :: _, game -> SettlersOfOcaml.placeSettlement id game
+         | _ -> assert_failure "Should be able to settle somewhere")
+         |> Result.get_ok
+         |> fun x -> ((), x))
+
 let roundOneShouldHavePlayerPlaceASettlement _ =
   let game = standard2PlayerGame in
   let curPlayerColor = game.currentColor in
@@ -60,17 +70,7 @@ let roundOneShouldHavePlayerPlaceASettlement _ =
   ()
 
 let roundOneShouldForcePlayerToPlaceARoadAfterASettlement _ =
-  let _, game =
-    Stateful.return ()
-    |> Stateful.bindPeek SettlersOfOcaml.listAvailableSettlementLocations
-    |> Stateful.mapWithState (fun x ->
-           (match x with
-           | (ID id, _) :: _, game -> SettlersOfOcaml.placeSettlement id game
-           | _ -> assert_failure "Should be able to settle somewhere")
-           |> Result.get_ok
-           |> fun x -> ((), x))
-    |> Stateful.run standard2PlayerGame
-  in
+  let _, game = placeSettlementSomewhere |> Stateful.run standard2PlayerGame in
 
   match game |> SettlersOfOcaml.getAvailableMoves with
   | [ PlaceRoad ] -> ()
