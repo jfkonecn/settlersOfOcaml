@@ -60,6 +60,16 @@ let listAvailableSettlementLocations (game : game) =
   let toCorner x = match x with id, Corner c -> Some (id, c) | _ -> None in
   game.gameBoard |> List.map (fun x -> x.item) |> List.filter_map toCorner
 
+let listAvailableRoadLocations (game : game) =
+  let toEdge x = 
+    match x with 
+    | id, Edge e -> Some (id, e) 
+    | _ -> None 
+  in
+  game.gameBoard 
+  |> List.map (fun x -> x.item) 
+  |> List.filter_map toEdge
+
 let getGameItemById id (game : game) =
   let toResult x =
     match x with Some x -> Ok x | None -> Error (BoardItemNotFound (ID id))
